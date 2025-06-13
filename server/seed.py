@@ -5,9 +5,12 @@ from models import db, Employee, Review, Onboarding
 with app.app_context():
 
     # Delete all rows in tables
-    Employee.query.delete()
+           # good order
     Review.query.delete()
     Onboarding.query.delete()
+    Employee.query.delete()
+    db.session.commit()
+
 
     # Add model instances to database
     uri = Employee(name="Uri Lee", hired_date=datetime.datetime(2022, 5, 17))

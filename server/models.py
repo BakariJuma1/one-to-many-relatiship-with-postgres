@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String,Column,Integer,MetaData,Date,DateTime,Boolean,ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy_serializer import SerializerMIxin
 
 
 metadata = MetaData()
@@ -18,7 +19,7 @@ class Employee(db.Model):
     # note value assigned to backpopulate is the property name assigned to the other rship in this case employee in review class is the property name
     onboarding = relationship('Onboarding',uselist=False,back_populates='employee',cascade='all,delete-orphan')
 
-class Onboarding(db.Model):
+class Onboarding(db.Model,SerializerMIxin):
     __tablename__ = 'onboardings'
 
     id = Column(Integer(),primary_key=True)
@@ -28,6 +29,8 @@ class Onboarding(db.Model):
     employee_id = Column(Integer(),ForeignKey('employees.id'))
 
     employee = db.relationship('Employee',back_populates='onboarding')
+
+    serialize_rules = ('')
 
 class Review(db.Model):
     __tablename__ = 'reviews'
