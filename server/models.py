@@ -7,8 +7,11 @@ from sqlalchemy_serializer import SerializerMIxin
 metadata = MetaData()
 db = SQLAlchemy(metadata=metadata)
 
-class Employee(db.Model):
+class Employee(db.Model,SerializerMIxin):
     __tablename__ = 'employees'
+    
+    # prevent looping back from reviews and on boarding
+    serialize_rules = ('-reviews.employee','-onboarding.employee')
 
     id = Column(Integer(),primary_key=True)
     name = Column(String(),nullable=False)
@@ -21,6 +24,8 @@ class Employee(db.Model):
 
 class Onboarding(db.Model,SerializerMIxin):
     __tablename__ = 'onboardings'
+    # Prevent looping back from Employee
+    serialize_rules = ('-employee.onboarding',)
 
     id = Column(Integer(),primary_key=True)
     orientation = Column(DateTime)
@@ -30,10 +35,15 @@ class Onboarding(db.Model,SerializerMIxin):
 
     employee = db.relationship('Employee',back_populates='onboarding')
 
-    serialize_rules = ('')
 
-class Review(db.Model):
+class Review(db.Model,SerializerMIxin):
     __tablename__ = 'reviews'
+    
+    # Prevent looping back from Employee
+    serialize_rules = ('-employee.reviews',)
+
+
+ 
 
     id = Column(Integer(),primary_key=True)
     year = db.Column(Integer())
